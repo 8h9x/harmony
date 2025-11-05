@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run -A --no-check
 
-import { build, emptyDir } from 'https://deno.land/x/dnt@0.30.0/mod.ts'
+// import { build, emptyDir } from 'https://deno.land/x/dnt@0.30.0/mod.ts'
+import { build, emptyDir } from "@deno/dnt";
 
 await emptyDir('./npm')
 
@@ -43,7 +44,7 @@ await build({
     ]
   },
   package: {
-    name: '@harmonyland/harmony',
+    name: '@8h9x/harmony',
     version: Deno.args[0],
     description:
       'An easy to use and advanced Discord API Library for Deno and Node.js',
@@ -59,12 +60,12 @@ await build({
       '@types/ws': '^8.5.3'
     }
   },
-  mappings: {
-    'https://esm.sh/ts-mixer@6.0.0': {
-      name: 'ts-mixer',
-      version: '^6.0.0'
-    }
-  }
+  // mappings: {
+  //   'https://esm.sh/ts-mixer@6.0.0': {
+  //     name: 'ts-mixer',
+  //     version: '^6.0.0'
+  //   }
+  // }
 })
 
 // Post build steps

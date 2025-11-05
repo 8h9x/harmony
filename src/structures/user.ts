@@ -114,8 +114,11 @@ export class User extends SnowflakeBase {
 }
 
 export class UserResolvable extends SnowflakeBase implements IResolvable<User> {
-  constructor(client: Client, public id: string) {
+  public id: string
+
+  constructor(client: Client, id: string) {
     super(client)
+    this.id = id
   }
 
   async get(): Promise<User | undefined> {

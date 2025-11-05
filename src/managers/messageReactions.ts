@@ -89,7 +89,7 @@ export class MessageReactionsManager extends BaseManager<
         ? emoji.substring(0, emoji.length - 2)
         : emoji
     const val = encodeURIComponent(
-      (typeof emoji === 'object' ? emoji.id ?? emoji.name : emoji) as string
+      (typeof emoji === 'object' ? (emoji.id ?? emoji.name) : emoji) as string
     )
     await this.client.rest.delete(
       MESSAGE_REACTION(this.message.channel.id, this.message.id, val)
@@ -110,7 +110,7 @@ export class MessageReactionsManager extends BaseManager<
         : emoji
 
     const val = encodeURIComponent(
-      (typeof emoji === 'object' ? emoji.id ?? emoji.name : emoji) as string
+      (typeof emoji === 'object' ? (emoji.id ?? emoji.name) : emoji) as string
     )
     await this.client.rest.delete(
       MESSAGE_REACTION_USER(

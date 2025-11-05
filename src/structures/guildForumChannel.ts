@@ -181,9 +181,8 @@ export class GuildForumChannel extends GuildThreadAvailableChannel {
       })
     }
 
-    const resp: ThreadChannelPayload = await this.client.rest.api.channels[
-      this.id
-    ].threads.post(body)
+    const resp: ThreadChannelPayload =
+      await this.client.rest.api.channels[this.id].threads.post(body)
     const thread = new ThreadChannel(this.client, resp, this.guild)
     this.threads.set(thread.id, resp)
     return thread

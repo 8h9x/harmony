@@ -63,7 +63,10 @@ export class ThreadResolvable
   extends SnowflakeBase
   implements IResolvable<ThreadChannel>
 {
-  constructor(client: Client, public id: string) {
+  constructor(
+    client: Client,
+    public id: string
+  ) {
     super(client)
   }
 

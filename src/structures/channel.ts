@@ -167,8 +167,8 @@ export class GuildChannel extends Channel {
   async overwritesFor(target: Member | Role | string): Promise<Overwrite[]> {
     const stringToObject =
       typeof target === 'string'
-        ? (await this.guild.members.get(target)) ??
-          (await this.guild.roles.get(target))
+        ? ((await this.guild.members.get(target)) ??
+          (await this.guild.roles.get(target)))
         : target
 
     if (stringToObject === undefined) {
@@ -223,8 +223,8 @@ export class GuildChannel extends Channel {
 
     const stringToObject =
       typeof target === 'string'
-        ? (await this.guild.members.get(target)) ??
-          (await this.guild.roles.get(target))
+        ? ((await this.guild.members.get(target)) ??
+          (await this.guild.roles.get(target)))
         : target
 
     if (stringToObject === undefined) {
@@ -282,17 +282,17 @@ export class GuildChannel extends Channel {
       const allow =
         typeof overwrite.allow === 'string'
           ? overwrite.allow
-          : overwrite.allow?.toJSON() ?? '0'
+          : (overwrite.allow?.toJSON() ?? '0')
       const deny =
         typeof overwrite.deny === 'string'
           ? overwrite.deny
-          : overwrite.deny?.toJSON() ?? '0'
+          : (overwrite.deny?.toJSON() ?? '0')
       const type =
         overwrite.id instanceof Role
           ? 0
           : overwrite.id instanceof Member
-          ? 1
-          : overwrite.type
+            ? 1
+            : overwrite.type
       if (type === undefined) {
         throw new Error('Overwrite type is undefined.')
       }
@@ -314,17 +314,17 @@ export class GuildChannel extends Channel {
     const allow =
       typeof overwrite.allow === 'string'
         ? overwrite.allow
-        : overwrite.allow?.toJSON() ?? '0'
+        : (overwrite.allow?.toJSON() ?? '0')
     const deny =
       typeof overwrite.deny === 'string'
         ? overwrite.deny
-        : overwrite.deny?.toJSON() ?? '0'
+        : (overwrite.deny?.toJSON() ?? '0')
     const type =
       overwrite.id instanceof Role
         ? 0
         : overwrite.id instanceof Member
-        ? 1
-        : overwrite.type
+          ? 1
+          : overwrite.type
     if (type === undefined) {
       throw new Error('Overwrite type is undefined.')
     }
@@ -390,7 +390,7 @@ export class GuildChannel extends Channel {
       allow =
         typeof overwrite.allow === 'string'
           ? overwrite.allow
-          : overwrite.allow?.toJSON() ?? overwrites[index].allow
+          : (overwrite.allow?.toJSON() ?? overwrites[index].allow)
     }
 
     if (
@@ -417,15 +417,15 @@ export class GuildChannel extends Channel {
       deny =
         typeof overwrite.deny === 'string'
           ? overwrite.deny
-          : overwrite.deny?.toJSON() ?? overwrites[index].deny
+          : (overwrite.deny?.toJSON() ?? overwrites[index].deny)
     }
 
     const type =
       overwrite.id instanceof Role
         ? 0
         : overwrite.id instanceof Member
-        ? 1
-        : overwrite.type
+          ? 1
+          : overwrite.type
     if (type === undefined) {
       throw new Error('Overwrite type is undefined.')
     }

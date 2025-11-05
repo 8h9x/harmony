@@ -87,17 +87,20 @@ export class VoiceManager extends HarmonyEventEmitter<{
       this.on('voiceStateUpdate', onVoiceStateAdd)
       this.client.on('voiceServerUpdate', onVoiceServerUpdate)
 
-      const timer = setTimeout(() => {
-        if (done < 2) {
-          this.client.off('voiceServerUpdate', onVoiceServerUpdate)
-          this.client.off('voiceStateAdd', onVoiceStateAdd)
-          reject(
-            new Error(
-              "Connection timed out - couldn't connect to Voice Channel"
+      const timer = setTimeout(
+        () => {
+          if (done < 2) {
+            this.client.off('voiceServerUpdate', onVoiceServerUpdate)
+            this.client.off('voiceStateAdd', onVoiceStateAdd)
+            reject(
+              new Error(
+                "Connection timed out - couldn't connect to Voice Channel"
+              )
             )
-          )
-        }
-      }, options?.timeout ?? 1000 * 30)
+          }
+        },
+        options?.timeout ?? 1000 * 30
+      )
 
       this.#pending.set(chan.guild.id, [timer, reject])
     })

@@ -1,11 +1,15 @@
 {
-  "name": "@harmonyland/harmony",
+  "name": "@8h9x/harmony",
   "version": "2.9.1",
   "description": "Discord API Library for Deno",
   "main": "mod.ts",
   "repository": "https://github.com/harmonyland/harmony.git",
   "author": "Harmony Team",
   "license": "MIT",
+  "dependencies": {
+    "@evan/wasm": "0.0.95",
+    "ts-mixer": "6.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",

@@ -15,18 +15,21 @@ import type {
 import type { UserPayload } from './user.ts'
 import { MessageAttachment } from '../structures/message.ts'
 
-export enum InteractionType {
+export const InteractionType = {
   /** Ping sent by the API (HTTP-only) */
-  PING = 1,
+  PING: 1,
   /** Slash Command Interaction */
-  APPLICATION_COMMAND = 2,
+  APPLICATION_COMMAND: 2,
   /** Message Component Interaction */
-  MESSAGE_COMPONENT = 3,
+  MESSAGE_COMPONENT: 3,
   /** Application Command Option Autocomplete Interaction */
-  AUTOCOMPLETE = 4,
+  AUTOCOMPLETE: 4,
   /** When user submits a Modal */
-  MODAL_SUBMIT = 5
-}
+  MODAL_SUBMIT: 5
+} as const
+
+export type InteractionType =
+  (typeof InteractionType)[keyof typeof InteractionType]
 
 export interface InteractionMemberPayload extends MemberPayload {
   /** Permissions of the Member who initiated Interaction (Guild-only) */
@@ -65,22 +68,29 @@ export interface InteractionPayload {
   message?: MessagePayload
 }
 
-export enum InteractionResponseType {
+export const InteractionResponseType = {
   /** [HTTP Only] Just ack a ping. */
-  PONG = 1,
+  PONG: 1,
   /** Send a channel message as response. */
-  CHANNEL_MESSAGE_WITH_SOURCE = 4,
+  CHANNEL_MESSAGE_WITH_SOURCE: 4,
   /** Let the user know bot is processing ("thinking") and you can edit the response later */
-  DEFERRED_CHANNEL_MESSAGE = 5,
+  DEFERRED_CHANNEL_MESSAGE: 5,
   /** Components: It will acknowledge the interaction and update the button to a loading state, and then you can PATCH the message later. */
-  DEFERRED_MESSAGE_UPDATE = 6,
+  DEFERRED_MESSAGE_UPDATE: 6,
   /** Components: Sent in response to a button interaction to immediately update the message to which the button was attached */
-  UPDATE_MESSAGE = 7,
+  UPDATE_MESSAGE: 7,
   /** Respond with auto-completions for Autocomplete Interactions */
-  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
+  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT: 8,
   /** Respond with a Modal (Form) */
-  MODAL = 9
-}
+  MODAL: 9,
+  /** @deprecated respond to an interaction with an upgrade button, only available for apps with monetization enabled */
+  PREMIUM_REQUIRED: 10,
+  /** Launch the Activity associated with the app. Only available for apps with Activities enabled */
+  LAUNCH_ACTIVITY: 12
+} as const
+
+export type InteractionResponseType =
+  (typeof InteractionResponseType)[keyof typeof InteractionResponseType]
 
 export interface InteractionResponsePayload {
   /** Type of the response */
@@ -117,7 +127,18 @@ export type InteractionResponseDataPayload =
   | InteractionResponseDataAutocompletePayload
   | InteractionResponseDataModalPayload
 
-export enum InteractionResponseFlags {
+export const InteractionResponseFlags = {
+  /** do not include any embeds when serializing this message */
+  SUPPRESS_EMBEDS: 1 << 2,
   /** A Message which is only visible to Interaction User. */
-  EPHEMERAL = 1 << 6
-}
+  EPHEMERAL: 1 << 6,
+  /** this message will not trigger push and desktop notifications */
+  SUPPRESS_NOTIFICATIONS: 1 << 12,
+  /** this message is a voice message */
+  IS_VOICE_MESSAGE: 1 << 13,
+  /** Allows you to create fully component-driven messages (* Once a message has been sent with this flag, it can't be removed from that message.) */
+  IS_COMPONENTS_V2: 1 << 15
+} as const
+
+export type InteractionResponseFlags =
+  (typeof InteractionResponseFlags)[keyof typeof InteractionResponseFlags]

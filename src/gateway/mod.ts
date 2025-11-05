@@ -409,7 +409,7 @@ export class Gateway extends HarmonyEventEmitter<GatewayTypedEvents> {
       d: {
         guild_id: guild,
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        query: options.users?.length ? undefined : options.query ?? '',
+        query: options.users?.length ? undefined : (options.query ?? ''),
         limit: options.limit ?? 0,
         presences: options.presences,
         user_ids: options.users,
@@ -432,20 +432,20 @@ export class Gateway extends HarmonyEventEmitter<GatewayTypedEvents> {
           channel === undefined
             ? null
             : typeof channel === 'string'
-            ? channel
-            : channel?.id,
+              ? channel
+              : channel?.id,
         self_mute:
           channel === undefined
             ? false
             : voiceOptions.mute === undefined
-            ? false
-            : voiceOptions.mute,
+              ? false
+              : voiceOptions.mute,
         self_deaf:
           channel === undefined
             ? false
             : voiceOptions.deaf === undefined
-            ? false
-            : voiceOptions.deaf
+              ? false
+              : voiceOptions.deaf
       }
     })
   }

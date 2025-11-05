@@ -250,8 +250,8 @@ export class Interaction extends SnowflakeBase {
         data.type === undefined
           ? InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE
           : typeof data.type === 'string'
-          ? InteractionResponseType[data.type]
-          : data.type,
+            ? InteractionResponseType[data.type]
+            : data.type,
       data: isResponseModal(data)
         ? {
             title: data.title,
@@ -259,22 +259,22 @@ export class Interaction extends SnowflakeBase {
             custom_id: data.customID
           }
         : data.type ===
-          InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
-        ? { choices: 'choices' in data ? data.choices : [] }
-        : isResponseMessage(data)
-        ? {
-            content: data.content ?? '',
-            embeds: data.embeds,
-            tts: data.tts ?? false,
-            flags,
-            allowed_mentions: data.allowedMentions,
-            components:
-              data.components === undefined
-                ? undefined
-                : transformComponent(data.components),
-            files: data.files ?? []
-          }
-        : undefined
+            InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+          ? { choices: 'choices' in data ? data.choices : [] }
+          : isResponseMessage(data)
+            ? {
+                content: data.content ?? '',
+                embeds: data.embeds,
+                tts: data.tts ?? false,
+                flags,
+                allowed_mentions: data.allowedMentions,
+                components:
+                  data.components === undefined
+                    ? undefined
+                    : transformComponent(data.components),
+                files: data.files ?? []
+              }
+            : undefined
     }
 
     if (this._httpRespond !== undefined && this._httpResponded !== true) {
@@ -427,8 +427,8 @@ export class Interaction extends SnowflakeBase {
         (option as WebhookMessageOptions)?.embed !== undefined
           ? [(option as WebhookMessageOptions).embed]
           : (option as WebhookMessageOptions)?.embeds !== undefined
-          ? (option as WebhookMessageOptions).embeds
-          : undefined,
+            ? (option as WebhookMessageOptions).embeds
+            : undefined,
       file: (option as WebhookMessageOptions)?.file,
       files: (option as WebhookMessageOptions)?.files,
       tts: (option as WebhookMessageOptions)?.tts,
@@ -440,10 +440,10 @@ export class Interaction extends SnowflakeBase {
         (option as WebhookMessageOptions)?.components === undefined
           ? undefined
           : typeof (option as WebhookMessageOptions).components === 'function'
-          ? (option as { components: CallableFunction }).components()
-          : transformComponent(
-              (option as { components: MessageComponentData[] }).components
-            ),
+            ? (option as { components: CallableFunction }).components()
+            : transformComponent(
+                (option as { components: MessageComponentData[] }).components
+              ),
       username: undefined as undefined | string,
       avatar: undefined as undefined | string
     }

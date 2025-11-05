@@ -480,9 +480,8 @@ export class Guild extends SnowflakeBase {
   /** Returns a partial invite object for guilds with that feature enabled. */
   async getVanity(): Promise<{ code: string | null; uses: number }> {
     try {
-      const value = await this.client.rest.api.guilds[this.id][
-        'vanity-url'
-      ].get()
+      const value =
+        await this.client.rest.api.guilds[this.id]['vanity-url'].get()
       return value
     } catch (error) {
       if (error instanceof DiscordAPIError) {
@@ -535,9 +534,8 @@ export class Guild extends SnowflakeBase {
 
   /** Syncs the template to the guild's current state. */
   async syncTemplate(code: string): Promise<Template> {
-    const payload = await this.client.rest.api.guilds[this.id].templates[
-      code
-    ].put()
+    const payload =
+      await this.client.rest.api.guilds[this.id].templates[code].put()
     return new Template(this.client, payload)
   }
 

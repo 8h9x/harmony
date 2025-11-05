@@ -12,7 +12,10 @@ export class GuildStickersManager extends BaseChildManager<
   MessageStickerPayload,
   MessageSticker
 > {
-  constructor(client: Client, public guild: Guild) {
+  constructor(
+    client: Client,
+    public guild: Guild
+  ) {
     super(client, client.stickers)
   }
 

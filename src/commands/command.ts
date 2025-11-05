@@ -146,8 +146,8 @@ export class Command implements CommandOptions {
       this.extension !== undefined && this.extension.name !== ''
         ? ` [${this.extension.name}]`
         : this.category !== undefined
-        ? ` [${this.category}]`
-        : ''
+          ? ` [${this.category}]`
+          : ''
     }`
   }
 
@@ -534,7 +534,7 @@ export class CommandsManager {
                 : e.name.toLowerCase()) === name ||
               (typeof e.aliases === 'string'
                 ? [e.aliases]
-                : e.aliases ?? []
+                : (e.aliases ?? [])
               ).some(
                 (e) =>
                   (this.client.caseSensitive === true ? e : e.toLowerCase()) ===

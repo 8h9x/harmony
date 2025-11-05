@@ -36,7 +36,7 @@ export interface GuildChannelPayload extends ChannelPayload {
 
 export interface GuildTextBasedChannelPayload
   extends TextChannelPayload,
-    GuildChannelPayload {}
+  GuildChannelPayload { }
 
 export interface GuildThreadAvailableChannelPayload
   extends GuildChannelPayload {
@@ -46,14 +46,17 @@ export interface GuildThreadAvailableChannelPayload
   default_auto_archive_duration?: number
 }
 
-export enum ChannelFlags {
-  PINNED = 1 << 1,
-  REQUIRE_TAG = 1 << 4
-}
+export const ChannelFlags = {
+  PINNED: 1 << 1,
+  REQUIRE_TAG: 1 << 4,
+  HIDE_MEDIA_DOWNLOAD_OPTIONS: 1 << 15
+} as const
+
+export type ChannelFlags = (typeof ChannelFlags)[keyof typeof ChannelFlags]
 
 export interface ThreadChannelPayload
   extends TextChannelPayload,
-    GuildChannelPayload {
+  GuildChannelPayload {
   message_count: number
   member_count: number
   member?: ThreadMemberPayload
@@ -66,22 +69,22 @@ export interface ThreadChannelPayload
 
 export interface GuildTextChannelPayload
   extends GuildTextBasedChannelPayload,
-    GuildThreadAvailableChannelPayload {}
+  GuildThreadAvailableChannelPayload { }
 
 export interface GuildNewsChannelPayload
   extends GuildTextBasedChannelPayload,
-    GuildThreadAvailableChannelPayload {}
+  GuildThreadAvailableChannelPayload { }
 
 export interface GuildVoiceChannelPayload
   extends GuildChannelPayload,
-    GuildTextBasedChannelPayload {
+  GuildTextBasedChannelPayload {
   bitrate: string
   user_limit: number
   video_quality_mode: number
 }
 
 export interface GuildStageChannelPayload
-  extends Omit<GuildVoiceChannelPayload, 'video_quality_mode'> {}
+  extends Omit<GuildVoiceChannelPayload, 'video_quality_mode'> { }
 
 export interface GuildForumTagPayload {
   id: string
@@ -96,10 +99,13 @@ export interface GuildForumDefaultReactionPayload {
   emoji_name: string | null
 }
 
-export enum GuildForumSortOrderTypes {
-  LATEST_ACTIVITY = 0,
-  CREATION_DATE = 1
-}
+export const GuildForumSortOrderTypes = {
+  LATEST_ACTIVITY: 0,
+  CREATION_DATE: 1
+} as const
+
+export type GuildForumSortOrderTypes =
+  (typeof GuildForumSortOrderTypes)[keyof typeof GuildForumSortOrderTypes]
 
 export interface GuildForumChannelPayload
   extends GuildThreadAvailableChannelPayload {
@@ -120,7 +126,7 @@ export interface GroupDMChannelPayload extends DMChannelPayload {
 
 export interface GuildCategoryChannelPayload
   extends ChannelPayload,
-    GuildChannelPayload {}
+  GuildChannelPayload { }
 
 export interface ModifyChannelPayload {
   name?: string
@@ -131,7 +137,7 @@ export interface ModifyChannelPayload {
 }
 
 export interface ModifyGuildCategoryChannelPayload
-  extends ModifyChannelPayload {}
+  extends ModifyChannelPayload { }
 
 export interface ModifyGuildTextBasedChannelPayload
   extends ModifyChannelPayload {
@@ -148,7 +154,7 @@ export interface ModifyGuildThreadAvailableChannelPayload
 
 export interface ModifyGuildTextChannelPayload
   extends ModifyGuildTextBasedChannelPayload,
-    ModifyGuildThreadAvailableChannelPayload {}
+  ModifyGuildThreadAvailableChannelPayload { }
 
 export interface ModifyThreadChannelPayload
   extends ModifyGuildTextBasedChannelPayload {
@@ -159,11 +165,11 @@ export interface ModifyThreadChannelPayload
 
 export interface ModifyGuildNewsChannelPayload
   extends ModifyGuildTextBasedChannelPayload,
-    ModifyGuildThreadAvailableChannelPayload {}
+  ModifyGuildThreadAvailableChannelPayload { }
 
 export interface ModifyVoiceChannelPayload
   extends ModifyChannelPayload,
-    ModifyGuildTextBasedChannelPayload {
+  ModifyGuildTextBasedChannelPayload {
   bitrate?: number | null
   user_limit?: number | null
 }
@@ -183,7 +189,7 @@ export interface ModifyChannelOption {
   nsfw?: boolean | null
 }
 
-export interface ModifyGuildCategoryChannelOption extends ModifyChannelOption {}
+export interface ModifyGuildCategoryChannelOption extends ModifyChannelOption { }
 
 export interface ModifyGuildTextBasedChannelOption extends ModifyChannelOption {
   type?: number
@@ -199,7 +205,7 @@ export interface ModifyGuildThreadAvailableChannelOption
 
 export interface ModifyGuildTextChannelOption
   extends ModifyGuildTextBasedChannelOption,
-    ModifyGuildThreadAvailableChannelOption {}
+  ModifyGuildThreadAvailableChannelOption { }
 
 export interface ModifyThreadChannelOption
   extends ModifyGuildTextChannelOption {
@@ -210,11 +216,11 @@ export interface ModifyThreadChannelOption
 
 export interface ModifyGuildNewsChannelOption
   extends ModifyGuildTextBasedChannelOption,
-    ModifyGuildThreadAvailableChannelOption {}
+  ModifyGuildThreadAvailableChannelOption { }
 
 export interface ModifyVoiceChannelOption
   extends ModifyChannelOption,
-    ModifyGuildTextBasedChannelOption {
+  ModifyGuildTextBasedChannelOption {
   bitrate?: number | null
   userLimit?: number | null
 }
@@ -226,10 +232,12 @@ export interface ModifyGuildForumChannelOption
   availableTags?: GuildForumTag[] | GuildForumTagPayload[] | null
 }
 
-export enum OverwriteType {
-  ROLE = 0,
-  USER = 1
-}
+export const OverwriteType = {
+  ROLE: 0,
+  USER: 1
+} as const
+
+export type OverwriteType = (typeof OverwriteType)[keyof typeof OverwriteType]
 
 export interface OverwritePayload {
   id: string
@@ -254,27 +262,32 @@ export interface OverwriteAsOptions {
 
 export type OverwriteAsArg = OverwriteAsOptions | OverwritePayload
 
-export enum OverrideType {
-  ADD = 0,
-  REMOVE = 1,
-  REPLACE = 2
-}
+export const OverrideType = {
+  ADD: 0,
+  REMOVE: 1,
+  REPLACE: 2
+} as const
 
-export enum ChannelTypes {
-  GUILD_TEXT = 0,
-  DM = 1,
-  GUILD_VOICE = 2,
-  GROUP_DM = 3,
-  GUILD_CATEGORY = 4,
-  GUILD_NEWS = 5,
-  GUILD_STORE = 6,
-  NEWS_THREAD = 10,
-  PUBLIC_THREAD = 11,
-  PRIVATE_THREAD = 12,
-  GUILD_STAGE_VOICE = 13,
-  GUILD_DIRECTORY = 14,
-  GUILD_FORUM = 15
-}
+export type OverrideType = (typeof OverrideType)[keyof typeof OverrideType]
+
+export const ChannelTypes = {
+  GUILD_TEXT: 0,
+  DM: 1,
+  GUILD_VOICE: 2,
+  GROUP_DM: 3,
+  GUILD_CATEGORY: 4,
+  GUILD_NEWS: 5,
+  GUILD_STORE: 6,
+  NEWS_THREAD: 10,
+  PUBLIC_THREAD: 11,
+  PRIVATE_THREAD: 12,
+  GUILD_STAGE_VOICE: 13,
+  GUILD_DIRECTORY: 14,
+  GUILD_FORUM: 15,
+  GUILD_MEDIA: 16
+} as const
+
+export type ChannelTypes = (typeof ChannelTypes)[keyof typeof ChannelTypes]
 
 export interface MessagePayload {
   id: string
@@ -305,14 +318,19 @@ export interface MessagePayload {
   sticker_items?: MessageStickerItemPayload[]
   interaction?: MessageInteractionPayload
   components?: MessageComponentPayload[]
-  thread?: ThreadChannelPayload
+  thread?: ThreadChannelPayload,
+  poll?: Poll
 }
 
-export enum AllowedMentionType {
-  Roles = 'roles',
-  Users = 'users',
-  Everyone = 'everyone'
-}
+export const AllowedMentionType = {
+  Roles: 'roles',
+  Users: 'users',
+  /** constrols @everyone and @here */
+  Everyone: 'everyone'
+} as const
+
+export type AllowedMentionType =
+  (typeof AllowedMentionType)[keyof typeof AllowedMentionType]
 
 export interface AllowedMentionsPayload {
   parse?: AllowedMentionType[]
@@ -339,6 +357,36 @@ export interface ChannelMention {
   guild_id: string
   type: ChannelTypes
   name: string
+}
+
+export interface PollMedia {
+  text: string,
+  emoji: Emoji
+}
+
+export interface PollAnswer {
+  answer_id: number,
+  pollmedia: PollMedia
+}
+
+export interface PollAnswerCount {
+  id: number;
+  count: number;
+  me_voted: boolean;
+}
+
+export interface PollResults {
+  is_finalized: boolean,
+  answer_counts: PollAnswerCount[]
+}
+
+export interface Poll {
+  question: PollMedia,
+  answers: PollAnswer[],
+  // expiry:
+  allow_multiselect: boolean,
+  layout_type: number,
+  results: PollResults
 }
 
 export interface Attachment {
@@ -445,64 +493,104 @@ export interface MessageReference {
   fail_if_not_exists?: boolean
 }
 
-export enum MessageTypes {
-  DEFAULT = 0,
-  RECIPIENT_ADD = 1,
-  RECIPIENT_REMOVE = 2,
-  CALL = 3,
-  CHANNEL_NAME_CHANGE = 4,
-  CHANNEL_ICON_CHANGE = 5,
-  CHANNEL_PINNED_MESSAGE = 6,
-  GUILD_MEMBER_JOIN = 7,
-  USER_PREMIUM_GUILD_SUBSCRIPTION = 8,
-  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1 = 9,
-  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10,
-  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11,
-  CHANNEL_FOLLOW_ADD = 12,
-  GUILD_DISCOVERY_DISQUALIFIED = 14,
-  GUILD_DISCOVERY_REQUALIFIED = 15,
-  GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING = 16,
-  GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING = 17,
-  THREAD_CREATED = 18,
-  REPLY = 19,
-  APPLICATION_COMMAND = 20,
-  THREAD_STARTER_MESSAGE = 21,
-  GUILD_INVITE_REMINDER = 22
-}
+export const MessageTypes = {
+  DEFAULT: 0,
+  RECIPIENT_ADD: 1,
+  RECIPIENT_REMOVE: 2,
+  CALL: 3,
+  CHANNEL_NAME_CHANGE: 4,
+  CHANNEL_ICON_CHANGE: 5,
+  CHANNEL_PINNED_MESSAGE: 6,
+  GUILD_MEMBER_JOIN: 7,
+  USER_PREMIUM_GUILD_SUBSCRIPTION: 8,
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1: 9,
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2: 10,
+  USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3: 11,
+  CHANNEL_FOLLOW_ADD: 12,
+  GUILD_DISCOVERY_DISQUALIFIED: 14,
+  GUILD_DISCOVERY_REQUALIFIED: 15,
+  GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING: 16,
+  GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING: 17,
+  THREAD_CREATED: 18,
+  REPLY: 19,
+  APPLICATION_COMMAND: 20,
+  THREAD_STARTER_MESSAGE: 21,
+  GUILD_INVITE_REMINDER: 22,
+  CONTEXT_MENU_COMMAND: 23,
+  AUTO_MODERATION_ACTION: 24,
+  ROLE_SUBSCRIPTION_PURCHASE: 25,
+  INTERACTION_PREMIUM_UPSELL: 26,
+  STAGE_START: 27,
+  STAGE_END: 28,
+  STAGE_SPEAKER: 29,
+  STAGE_TOPIC: 31,
+  GUILD_APPLICATION_PREMIUM_SUBSCRIPTION: 32,
+  GUILD_INCIDENT_ALERT_MODE_ENABLED: 36,
+  GUILD_INCIDENT_ALERT_MODE_DISABLED: 37,
+  GUILD_INCIDENT_REPORT_RAID: 38,
+  GUILD_INCIDENT_REPORT_FALSE_ALARM: 39,
+  PURCHASE_NOTIFICATION: 44,
+  POLL_RESULT: 46,
 
-export enum MessageActivityTypes {
-  JOIN = 1,
-  SPECTATE = 2,
-  LISTEN = 3,
-  JOIN_REQUEST = 4
-}
+  GUILD_BOOST: 8,
+  GUILD_BOOST_TIER_1: 9,
+  GUILD_BOOST_TIER_2: 10,
+  GUILD_BOOST_TIER_3: 11
+} as const
 
-export enum MessageFlags {
-  CROSSPOSTED = 1 << 0,
-  IS_CROSSPOST = 1 << 1,
-  SUPPRESS_EMBEDS = 1 << 2,
-  SOURCE_MESSAGE_DELETED = 1 << 3,
-  URGENT = 1 << 4,
-  HAS_THREAD = 1 << 5,
-  EPHEMERAL = 1 << 6,
-  LOADING = 1 << 7
-}
+export type MessageTypes = (typeof MessageTypes)[keyof typeof MessageTypes]
+
+export const MessageActivityTypes = {
+  JOIN: 1,
+  SPECTATE: 2,
+  LISTEN: 3,
+  // JOIN_REQUEST : 4,
+  JOIN_REQUEST: 5
+} as const
+
+export type MessageActivityTypes =
+  (typeof MessageActivityTypes)[keyof typeof MessageActivityTypes]
+
+export const MessageFlags = {
+  CROSSPOSTED: 1 << 0,
+  IS_CROSSPOST: 1 << 1,
+  SUPPRESS_EMBEDS: 1 << 2,
+  SOURCE_MESSAGE_DELETED: 1 << 3,
+  URGENT: 1 << 4,
+  HAS_THREAD: 1 << 5,
+  EPHEMERAL: 1 << 6,
+  LOADING: 1 << 7,
+  FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: 1 << 8,
+  SUPPRESS_NOTIFICATIONS: 1 << 12,
+  IS_VOICE_MESSAGE: 1 << 13,
+  HAS_SNAPSHOT: 1 << 14,
+  IS_COMPONENTS_V2: 1 << 15
+} as const
+
+export type MessageFlags = (typeof MessageFlags)[keyof typeof MessageFlags]
 
 export interface FollowedChannel {
   channel_id: string
   webhook_id: string
 }
 
-export enum MessageStickerFormatTypes {
-  PNG = 1,
-  APNG = 2,
-  LOTTIE = 3
-}
+export const MessageStickerFormatTypes = {
+  PNG: 1,
+  APNG: 2,
+  LOTTIE: 3,
+  GIF: 4
+} as const
 
-export enum MessageStickerType {
-  STANDARD = 1,
-  GUILD = 2
-}
+export type MessageStickerFormatTypes =
+  (typeof MessageStickerFormatTypes)[keyof typeof MessageStickerFormatTypes]
+
+export const MessageStickerType = {
+  STANDARD: 1,
+  GUILD: 2
+} as const
+
+export type MessageStickerType =
+  (typeof MessageStickerType)[keyof typeof MessageStickerType]
 
 export interface MessageStickerItemPayload {
   id: string

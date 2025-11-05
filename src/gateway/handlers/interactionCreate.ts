@@ -45,18 +45,18 @@ export const interactionCreate: GatewayEventHandler = async (
   const guild =
     d.guild_id === undefined
       ? undefined
-      : (await gateway.client.guilds.get(d.guild_id)) ??
+      : ((await gateway.client.guilds.get(d.guild_id)) ??
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         new Guild(gateway.client, {
           unavailable: true,
           id: d.guild_id
-        } as GuildPayload)
+        } as GuildPayload))
 
   if (d.member !== undefined)
     await guild?.members.set(d.member.user.id, d.member)
   const member =
     d.member !== undefined
-      ? (await guild?.members.get(d.member.user.id))! ??
+      ? ((await guild?.members.get(d.member.user.id))! ??
         new Member(
           gateway.client,
           d.member!,
@@ -64,7 +64,7 @@ export const interactionCreate: GatewayEventHandler = async (
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           guild!,
           new Permissions(d.member.permissions)
-        )
+        ))
       : undefined
   if (member !== undefined) {
     member.permissions.bitfield = BigInt(d.member!.permissions!)

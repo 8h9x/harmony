@@ -68,8 +68,8 @@ export class ApplicationCommand {
       (typeof guild === 'string'
         ? guild
         : typeof guild === 'object'
-        ? guild.id
-        : undefined)
+          ? guild.id
+          : undefined)
     if (guildID === undefined)
       throw new Error('Expected Slash Command to be a Guild one')
     return await this.slash.permissions.set(this.id, data, guildID)
@@ -83,8 +83,8 @@ export class ApplicationCommand {
       (typeof guild === 'string'
         ? guild
         : typeof guild === 'object'
-        ? guild.id
-        : undefined)
+          ? guild.id
+          : undefined)
     if (guildID === undefined)
       throw new Error('Expected Slash Command to be a Guild one')
     return await this.slash.permissions.get(this.id, guildID)
@@ -342,7 +342,10 @@ export class ApplicationCommandPermissionsManager {
   readonly slash!: InteractionsClient
   readonly rest!: RESTManager
 
-  constructor(client: InteractionsClient, public guildID?: string) {
+  constructor(
+    client: InteractionsClient,
+    public guildID?: string
+  ) {
     Object.defineProperty(this, 'slash', { value: client, enumerable: false })
     Object.defineProperty(this, 'rest', {
       enumerable: false,
@@ -356,9 +359,10 @@ export class ApplicationCommandPermissionsManager {
   ): Promise<GuildApplicationCommandPermissions[]> {
     guild = guild ?? this.guildID
     if (guild === undefined) throw new Error('Guild argument not provided')
-    const data = await this.rest.api.applications[this.slash.getID()].guilds[
-      typeof guild === 'string' ? guild : guild.id
-    ].commands.permissions.get()
+    const data =
+      await this.rest.api.applications[this.slash.getID()].guilds[
+        typeof guild === 'string' ? guild : guild.id
+      ].commands.permissions.get()
     return data.map(transformApplicationCommandPermissionsPayload)
   }
 
@@ -369,9 +373,10 @@ export class ApplicationCommandPermissionsManager {
   ): Promise<GuildApplicationCommandPermissions> {
     guild = guild ?? this.guildID
     if (guild === undefined) throw new Error('Guild argument not provided')
-    const data = await this.rest.api.applications[this.slash.getID()].guilds[
-      typeof guild === 'string' ? guild : guild.id
-    ].commands[typeof cmd === 'object' ? cmd.id : cmd].permissions.get()
+    const data =
+      await this.rest.api.applications[this.slash.getID()].guilds[
+        typeof guild === 'string' ? guild : guild.id
+      ].commands[typeof cmd === 'object' ? cmd.id : cmd].permissions.get()
     return transformApplicationCommandPermissionsPayload(data)
   }
 
@@ -497,8 +502,8 @@ export class ApplicationCommandsManager {
       typeof guild === 'object'
         ? guild
         : guild === undefined
-        ? undefined
-        : await this.slash.client?.guilds.get(guild)
+          ? undefined
+          : await this.slash.client?.guilds.get(guild)
 
     const cmd = new ApplicationCommand(this, payload, _guild)
     cmd.guildID =
@@ -560,8 +565,8 @@ export class ApplicationCommandsManager {
       typeof guild === 'object'
         ? guild
         : guild === undefined
-        ? undefined
-        : await this.slash.client?.guilds.get(guild)
+          ? undefined
+          : await this.slash.client?.guilds.get(guild)
 
     return new ApplicationCommand(this, data, _guild)
   }
@@ -585,8 +590,8 @@ export class ApplicationCommandsManager {
       typeof guild === 'object'
         ? guild
         : typeof guild === 'string'
-        ? await this.slash.client?.guilds.get(guild)
-        : undefined
+          ? await this.slash.client?.guilds.get(guild)
+          : undefined
 
     for (const raw of d) {
       const cmd = new ApplicationCommand(this, raw, _guild)

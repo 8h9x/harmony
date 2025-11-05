@@ -184,10 +184,9 @@ export class APIRequest {
       Authorization:
         this.rest.token === undefined
           ? undefined
-          : `${this.rest.tokenType} ${
-              typeof this.rest.token === 'string'
-                ? this.rest.token
-                : this.rest.token()
+          : `${this.rest.tokenType} ${typeof this.rest.token === 'string'
+            ? this.rest.token
+            : this.rest.token()
             }`.trim()
     }
 
@@ -201,11 +200,11 @@ export class APIRequest {
     }
 
     if (this.options.reason !== undefined) {
-      ;(init.headers as { [name: string]: string })['X-Audit-Log-Reason'] =
+      ; (init.headers as { [name: string]: string })['X-Audit-Log-Reason'] =
         encodeURIComponent(this.options.reason)
     }
 
-    return fetch(url, init).finally(() => {
+    return await fetch(url, init).finally(() => {
       clearTimeout(timer)
       this.rest.timers.delete(timer)
     })

@@ -122,6 +122,7 @@ test/data/*
 src/test/music.mp3
 
 .vscode/
+.zed/
 test/dd.ts
 /test/dd.ts
 

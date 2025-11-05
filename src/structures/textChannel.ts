@@ -169,20 +169,20 @@ export class TextChannel extends Channel {
         options?.around === undefined
           ? undefined
           : typeof options.around === 'string'
-          ? options.around
-          : options.around.id,
+            ? options.around
+            : options.around.id,
       before:
         options?.before === undefined
           ? undefined
           : typeof options.before === 'string'
-          ? options.before
-          : options.before.id,
+            ? options.before
+            : options.before.id,
       after:
         options?.after === undefined
           ? undefined
           : typeof options.after === 'string'
-          ? options.after
-          : options.after.id
+            ? options.after
+            : options.after.id
     })) as MessagePayload[]
 
     for (const raw of raws) {

@@ -78,10 +78,10 @@ export class RolesManager extends BaseManager<RolePayload, Role> {
         data?.color === undefined
           ? undefined
           : typeof data.color === 'string'
-          ? isNaN(parseInt(data.color, 16))
-            ? 0
-            : parseInt(data.color, 16)
-          : data.color,
+            ? isNaN(parseInt(data.color, 16))
+              ? 0
+              : parseInt(data.color, 16)
+            : data.color,
       hoist: data?.hoist ?? false,
       mentionable: data?.mentionable ?? false
     })) as unknown as RolePayload

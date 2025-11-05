@@ -91,8 +91,8 @@ export class GuildChannelsManager extends BaseChildManager<
         options.parent === undefined
           ? undefined
           : typeof options.parent === 'object'
-          ? options.parent.id
-          : options.parent,
+            ? options.parent.id
+            : options.parent,
       nsfw: options.nsfw
     })) as unknown as GuildChannelPayload
 

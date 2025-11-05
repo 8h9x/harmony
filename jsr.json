@@ -1,0 +1,5 @@
+{
+  "name": "@8h9x/harmony",
+  "version": "2.9.1",
+  "exports": "./mod.ts"
+}

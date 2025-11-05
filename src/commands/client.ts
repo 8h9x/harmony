@@ -49,16 +49,19 @@ export interface CommandClientOptions extends ClientOptions {
   globalCooldown?: number
 }
 
-export enum CommandCooldownType {
+export const CommandCooldownType = {
   /** Cooldown for command for user */
-  USER_COMMAND,
+  USER_COMMAND: 0,
   /** Cooldown for any command for bot */
-  USER_GLOBAL,
+  USER_GLOBAL: 1,
   /** Cooldown for command for bot */
-  BOT_COMMAND,
+  BOT_COMMAND: 2,
   /** Cooldown for any command for bot */
-  BOT_GLOBAL
-}
+  BOT_GLOBAL: 3
+} as const
+
+export type CommandCooldownType =
+  (typeof CommandCooldownType)[keyof typeof CommandCooldownType]
 
 export type CommandContextMiddleware<T extends CommandContext> = (
   ctx: T,

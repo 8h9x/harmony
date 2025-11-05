@@ -86,7 +86,7 @@ export class ShardManager extends HarmonyEventEmitter<ShardManagerEvents> {
         shardCount =
           typeof this.client.shardCount === 'string'
             ? 1
-            : this.client.shardCount ?? 1
+            : (this.client.shardCount ?? 1)
     }
     this.cachedShardCount = shardCount
     return this.cachedShardCount

@@ -54,9 +54,8 @@ export class MessageMentions {
 
         if (this.client === undefined) continue
 
-        const channel = await this.client.channels.get<GuildTextBasedChannel>(
-          parsedID
-        )
+        const channel =
+          await this.client.channels.get<GuildTextBasedChannel>(parsedID)
         if (channel !== undefined) this.channels.set(channel.id, channel)
       }
     }

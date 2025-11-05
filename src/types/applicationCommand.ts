@@ -56,30 +56,33 @@ export interface ApplicationCommandChoice {
 
 export type { ApplicationCommandChoice as SlashCommandChoice }
 
-export enum ApplicationCommandOptionType {
+export const ApplicationCommandOptionType = {
   /** A sub command that is either a part of a root command or Sub Command Group */
-  SUB_COMMAND = 1,
+  SUB_COMMAND: 1,
   /** A sub command group that is present in root command's options */
-  SUB_COMMAND_GROUP = 2,
+  SUB_COMMAND_GROUP: 2,
   /** String option type */
-  STRING = 3,
+  STRING: 3,
   /** Integer option type */
-  INTEGER = 4,
+  INTEGER: 4,
   /** Boolean option type */
-  BOOLEAN = 5,
+  BOOLEAN: 5,
   /** User option type */
-  USER = 6,
+  USER: 6,
   /** Channel option type */
-  CHANNEL = 7,
+  CHANNEL: 7,
   /** Role option type */
-  ROLE = 8,
+  ROLE: 8,
   /** Union of User and Role option type */
-  MENTIONABLE = 9,
+  MENTIONABLE: 9,
   /** Number option type, similar to JS Number. Can be both integer and float */
-  NUMBER = 10,
+  NUMBER: 10,
   /** Attachment option type */
-  ATTACHMENT = 11
-}
+  ATTACHMENT: 11
+} as const
+
+export type ApplicationCommandOptionType =
+  (typeof ApplicationCommandOptionType)[keyof typeof ApplicationCommandOptionType]
 
 export { ApplicationCommandOptionType as SlashCommandOptionType }
 
@@ -130,14 +133,19 @@ export interface ApplicationCommandOption
 
 export type { ApplicationCommandOption as SlashCommandOption }
 
-export enum ApplicationCommandType {
+export const ApplicationCommandType = {
   /** Slash Command which user types in Chat Input */
-  CHAT_INPUT = 1,
+  CHAT_INPUT: 1,
   /** Command triggered from the User Context Menu */
-  USER = 2,
+  USER: 2,
   /** Command triggered from the Message Content Menu */
-  MESSAGE = 3
-}
+  MESSAGE: 3,
+  /** A UI-based command that represents the primary way to invoke an app's Activity (idk haha) */
+  PRIMARY_ENTRY_POINT: 4
+} as const
+
+export type ApplicationCommandType =
+  (typeof ApplicationCommandType)[keyof typeof ApplicationCommandType]
 
 /** Represents the Slash Command (Application Command) payload sent for creating/[bulk] editing. */
 export interface ApplicationCommandPartialBase<
@@ -188,10 +196,14 @@ export interface ApplicationCommandPayload
 
 export type { ApplicationCommandPayload as SlashCommandPayload }
 
-export enum ApplicationCommandPermissionType {
-  ROLE = 1,
-  USER = 2
-}
+export const ApplicationCommandPermissionType = {
+  ROLE: 1,
+  USER: 2,
+  CHANNEL: 3
+} as const
+
+export type ApplicationCommandPermissionType =
+  (typeof ApplicationCommandPermissionType)[keyof typeof ApplicationCommandPermissionType]
 
 export { ApplicationCommandPermissionType as SlashCommandPermissionType }
 

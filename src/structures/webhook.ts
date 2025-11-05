@@ -109,8 +109,8 @@ export class Webhook {
         (option as WebhookMessageOptions)?.embed !== undefined
           ? [(option as WebhookMessageOptions).embed]
           : (option as WebhookMessageOptions)?.embeds !== undefined
-          ? (option as WebhookMessageOptions).embeds
-          : undefined,
+            ? (option as WebhookMessageOptions).embeds
+            : undefined,
       file: (option as WebhookMessageOptions)?.file,
       files: (option as WebhookMessageOptions)?.files,
       tts: (option as WebhookMessageOptions)?.tts,

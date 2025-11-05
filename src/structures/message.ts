@@ -6,7 +6,8 @@ import {
   MessageInteractionPayload,
   MessageOptions,
   MessagePayload,
-  MessageReference
+  MessageReference,
+  Poll
 } from '../types/channel.ts'
 import type { Client } from '../client/mod.ts'
 import { User } from './user.ts'
@@ -74,6 +75,7 @@ export class Message extends SnowflakeBase {
   interaction?: MessageInteraction
   createdTimestamp: Date
   components: MessageComponentData[] = []
+  poll?: Poll
 
   get createdAt(): Date {
     return this.createdTimestamp // new Date(this.timestamp)
@@ -122,8 +124,8 @@ export class Message extends SnowflakeBase {
     this.stickerItems =
       data.sticker_items !== undefined
         ? data.sticker_items.map(
-            (payload) => new MessageStickerItem(this.client, payload)
-          )
+          (payload) => new MessageStickerItem(this.client, payload)
+        )
         : this.stickerItems
     this.interaction =
       data.interaction === undefined
@@ -133,6 +135,7 @@ export class Message extends SnowflakeBase {
       data.components === undefined
         ? []
         : transformComponentPayload(data.components)
+    this.poll = data.poll ?? this.poll
   }
 
   async updateRefs(): Promise<void> {
@@ -248,8 +251,8 @@ export class MessageAttachment {
       typeof blob === 'string'
         ? new Blob([encodeText(blob)])
         : blob instanceof Uint8Array
-        ? new Blob([blob])
-        : blob
+          ? new Blob([blob])
+          : blob
     this.description = description
   }
 

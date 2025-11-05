@@ -1,42 +1,79 @@
-export enum MessageComponentType {
-  /** Container or row of components. Deprecated, use ACTION_ROW instead */
-  ActionRow = 1,
-  /** A clickable button. Deprecated, use BUTTON instead */
-  Button = 2,
-  /** Dropdown menu, Deprecated, use SELECT instead */
-  Select = 3,
+export const MessageComponentType = {
+  /** @deprecated Container or row of components. Use ACTION_ROW instead */
+  ActionRow: 1,
+  /** @deprecated A clickable button. Use BUTTON instead */
+  Button: 2,
+  /** @deprecated Dropdown menu. Use SELECT instead */
+  Select: 3,
 
-  /** Container or row of components */
-  ACTION_ROW = 1,
+  /** Container to display a row of interactive components */
+  ACTION_ROW: 1,
   /** A clickable button */
-  BUTTON = 2,
-  /** Dropdown menu */
-  SELECT = 3,
-  /** Text Input (only for modals) */
-  TEXT_INPUT = 4
-}
+  BUTTON: 2,
+  /** Select menu for picking from defined text options */
+  STRING_SELECT: 3,
+  /** Text input object */
+  TEXT_INPUT: 4,
+  /** Select menu for users */
+  USER_SELECT: 5,
+  /** Select menu for roles */
+  ROLE_SELECT: 6,
+  /** Select menu for mentionables (users and roles) */
+  MENTIONABLE_SELECT: 7,
+  /** Select menu for channels */
+  CHANNEL_SELECT: 8,
+  /** Container to display text alongside an accessory component */
+  SECTION: 9,
+  /** Markdown text */
+  TEXT_DISPLAY: 10,
+  /** Small image that can be used as an accessory */
+  THUMBNAIL: 11,
+  /** Display images and other media */
+  MEDIA_GALLERY: 12,
+  /** Displays an attached file */
+  FILE: 13,
+  /** Component to add vertical padding between other components */
+  SEPARATOR: 14,
+  /** Container that visually groups a set of components */
+  CONTAINER: 17,
+  /** Container associating a label and description with a component */
+  LABEL: 18,
+  /** Component for uploading files */
+  FILE_UPLOAD: 19
+} as const
 
-export enum ButtonStyle {
-  PRIMARY = 1,
-  SECONDARY = 2,
-  SUCCESS = 3,
-  DANGER = 4,
-  LINK = 5,
+export type MessageComponentType =
+  (typeof MessageComponentType)[keyof typeof MessageComponentType]
+
+export const ButtonStyle = {
+  PRIMARY: 1,
+  SECONDARY: 2,
+  SUCCESS: 3,
+  DANGER: 4,
+  LINK: 5,
+  PREMIUM: 6,
 
   // Aliases
-  BLURPLE = 1,
-  GREY = 2,
-  GREEN = 3,
-  RED = 4,
-  DESTRUCTIVE = 4
-}
+  BLURPLE: 1,
+  GREY: 2,
+  GREEN: 3,
+  RED: 4,
+  DESTRUCTIVE: 4,
+  NAVIGATE: 5,
+  PURCHASE: 6
+} as const
 
-export enum TextInputStyle {
+export type ButtonStyle = (typeof ButtonStyle)[keyof typeof ButtonStyle]
+
+export const TextInputStyle = {
   /** Intended for short single-line text. */
-  SHORT = 1,
+  SHORT: 1,
   /** Intended for much longer inputs. */
-  PARAGRAPH = 2
-}
+  PARAGRAPH: 2
+} as const
+
+export type TextInputStyle =
+  (typeof TextInputStyle)[keyof typeof TextInputStyle]
 
 export interface MessageComponentEmoji {
   id?: string
@@ -45,27 +82,28 @@ export interface MessageComponentEmoji {
 }
 
 export interface ActionRowComponentPayload {
-  type: MessageComponentType.ACTION_ROW
+  type: typeof MessageComponentType.ACTION_ROW
   components: MessageComponentPayload[]
 }
 
 export interface ActionRowComponent {
-  type: MessageComponentType.ACTION_ROW | 'ACTION_ROW'
+  type: typeof MessageComponentType.ACTION_ROW | 'ACTION_ROW'
   components: MessageComponentData[]
 }
 
 export interface ButtonComponentPayload {
-  type: MessageComponentType.BUTTON
+  type: typeof MessageComponentType.BUTTON
   label?: string
   style: ButtonStyle
   custom_id?: string
   url?: string
+  sku_id?: string
   disabled?: boolean
   emoji?: MessageComponentEmoji
 }
 
 export interface ButtonComponent {
-  type: MessageComponentType.BUTTON | 'BUTTON'
+  type: typeof MessageComponentType.BUTTON | 'BUTTON'
   label: string
   style: ButtonStyle | keyof typeof ButtonStyle
   customID?: string
@@ -82,8 +120,9 @@ export interface SelectComponentOption {
   emoji?: MessageComponentEmoji
 }
 
+// TODO: rename to StringSelectComponentPayload
 export interface SelectComponentPayload {
-  type: MessageComponentType.SELECT
+  type: typeof MessageComponentType.STRING_SELECT
   custom_id: string
   placeholder?: string
   options: SelectComponentOption[]
@@ -92,8 +131,9 @@ export interface SelectComponentPayload {
   max_values?: number
 }
 
+// TODO: rename to StringSelectComponent
 export interface SelectComponent {
-  type: MessageComponentType.SELECT | 'SELECT'
+  type: typeof MessageComponentType.STRING_SELECT | 'STRING_SELECT'
   customID: string
   placeholder?: string
   options: SelectComponentOption[]
@@ -103,7 +143,7 @@ export interface SelectComponent {
 }
 
 export interface TextInputComponentPayload {
-  type: MessageComponentType.TEXT_INPUT
+  type: typeof MessageComponentType.TEXT_INPUT
   label: string
   custom_id: string
   style: TextInputStyle
@@ -115,7 +155,7 @@ export interface TextInputComponentPayload {
 }
 
 export interface TextInputComponent {
-  type: MessageComponentType.TEXT_INPUT | 'TEXT_INPUT'
+  type: typeof MessageComponentType.TEXT_INPUT | 'TEXT_INPUT'
   label: string
   customID: string
   style: TextInputStyle | keyof typeof TextInputStyle
@@ -145,7 +185,7 @@ export interface InteractionMessageComponentData {
 }
 
 export interface ModalSubmitComponentTextInputData {
-  type: MessageComponentType.TEXT_INPUT
+  type: typeof MessageComponentType.TEXT_INPUT
   custom_id: string
   value: string
 }
@@ -153,7 +193,7 @@ export interface ModalSubmitComponentTextInputData {
 export type ModalSubmitComponentDataBase = ModalSubmitComponentTextInputData
 
 export interface ModalSubmitActionRow {
-  type: MessageComponentType.ACTION_ROW
+  type: typeof MessageComponentType.ACTION_ROW
   components: ModalSubmitComponentDataBase[]
 }
 

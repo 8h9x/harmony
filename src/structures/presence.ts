@@ -11,14 +11,16 @@ import type { Guild } from './guild.ts'
 import type { User } from './user.ts'
 import type { Client } from '../client/mod.ts'
 
-export enum ActivityTypes {
-  PLAYING = 0,
-  STREAMING = 1,
-  LISTENING = 2,
-  WATCHING = 3,
-  CUSTOM_STATUS = 4,
-  COMPETING = 5
-}
+export const ActivityTypes = {
+  PLAYING: 0,
+  STREAMING: 1,
+  LISTENING: 2,
+  WATCHING: 3,
+  CUSTOM_STATUS: 4,
+  COMPETING: 5
+} as const
+
+export type ActivityTypes = (typeof ActivityTypes)[keyof typeof ActivityTypes]
 
 export class Presence extends Base {
   user: User
@@ -118,8 +120,8 @@ export class ClientPresence {
       this.activity === undefined
         ? null
         : this.activity instanceof Array
-        ? this.activity
-        : [this.activity]
+          ? this.activity
+          : [this.activity]
     if (activity === null) return activity
     else {
       activity.map((e) => {

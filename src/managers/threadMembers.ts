@@ -9,7 +9,10 @@ export class ThreadMembersManager extends BaseManager<
   ThreadMemberPayload,
   ThreadMember
 > {
-  constructor(client: Client, public thread: ThreadChannel) {
+  constructor(
+    client: Client,
+    public thread: ThreadChannel
+  ) {
     super(client, `thread_members:${thread.id}`, ThreadMember)
   }
 

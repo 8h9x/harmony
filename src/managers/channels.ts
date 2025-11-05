@@ -137,27 +137,26 @@ export class ChannelsManager extends BaseManager<ChannelPayload, Channel> {
         option?.reply === undefined
           ? undefined
           : typeof option.reply === 'string'
-          ? {
-              message_id: option.reply
-            }
-          : typeof option.reply === 'object'
-          ? option.reply instanceof Message
             ? {
-                message_id: option.reply.id,
-                channel_id: option.reply.channel.id,
-                guild_id: option.reply.guild?.id
+                message_id: option.reply
               }
-            : option.reply
-          : undefined
+            : typeof option.reply === 'object'
+              ? option.reply instanceof Message
+                ? {
+                    message_id: option.reply.id,
+                    channel_id: option.reply.channel.id,
+                    guild_id: option.reply.guild?.id
+                  }
+                : option.reply
+              : undefined
     }
 
     if (payload.content === undefined && payload.embed === undefined) {
       payload.content = ''
     }
 
-    const resp = await this.client.rest.api.channels[channelID].messages.post(
-      payload
-    )
+    const resp =
+      await this.client.rest.api.channels[channelID].messages.post(payload)
     const chan =
       typeof channel === 'string'
         ? (await this.get<TextChannel>(channel))!
@@ -235,9 +234,8 @@ export class ChannelsManager extends BaseManager<ChannelPayload, Channel> {
       throw new Error(`Channel ${channelID} not found.`)
     }
 
-    const pins: MessagePayload[] = await this.client.rest.api.channels[
-      channelID
-    ].pins.get()
+    const pins: MessagePayload[] =
+      await this.client.rest.api.channels[channelID].pins.get()
 
     for (const pin of pins) {
       await channelStruct.messages.set(pin.id, pin)

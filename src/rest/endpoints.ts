@@ -1459,8 +1459,7 @@ The `emoji` must be [URL Encoded](https://en.wikipedia.org/wiki/Percent-encoding
   }> {
     const qs = queryString(params)
     return this.rest.get(
-      `/channels/${channelId}/threads/archived/public${
-        qs.length !== 0 ? `?${qs}` : ''
+      `/channels/${channelId}/threads/archived/public${qs.length !== 0 ? `?${qs}` : ''
       }`
     )
   }
@@ -1478,8 +1477,7 @@ The `emoji` must be [URL Encoded](https://en.wikipedia.org/wiki/Percent-encoding
   }> {
     const qs = queryString(params)
     return this.rest.get(
-      `/channels/${channelId}/threads/archived/private${
-        qs.length !== 0 ? `?${qs}` : ''
+      `/channels/${channelId}/threads/archived/private${qs.length !== 0 ? `?${qs}` : ''
       }`
     )
   }
@@ -1497,8 +1495,7 @@ The `emoji` must be [URL Encoded](https://en.wikipedia.org/wiki/Percent-encoding
   }> {
     const qs = queryString(params)
     return this.rest.get(
-      `/channels/${channelId}/users/@me/threads/archived/private${
-        qs.length !== 0 ? `?${qs}` : ''
+      `/channels/${channelId}/users/@me/threads/archived/private${qs.length !== 0 ? `?${qs}` : ''
       }`
     )
   }

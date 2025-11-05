@@ -1,18 +1,22 @@
 import type { Client } from '../client/mod.ts'
 import type {
-  MessageStickerFormatTypes,
   MessageStickerItemPayload,
   MessageStickerPackPayload,
   MessageStickerPayload,
   MessageStickerType,
   ModifyGuildStickerOptions
 } from '../types/channel.ts'
+import {
+  MessageStickerFormatTypes
+} from '../types/channel.ts'
+import { Constants } from '../types/constants.js'
 import { SnowflakeBase } from './base.ts'
 import { User } from './user.ts'
 
 export class MessageStickerItem extends SnowflakeBase {
   name!: string
   formatType!: MessageStickerFormatTypes
+  url!: string
 
   constructor(client: Client, data: MessageStickerItemPayload) {
     super(client)
@@ -23,6 +27,21 @@ export class MessageStickerItem extends SnowflakeBase {
     this.id = data.id ?? this.id
     this.name = data.name ?? this.name
     this.formatType = data.format_type ?? this.formatType
+    this.url = this.getUrl(this.id, this.formatType) ?? this.url;
+  }
+
+  private getStickerFileExtension(formatType: MessageStickerFormatTypes): string {
+    if (formatType === MessageStickerFormatTypes.LOTTIE) {
+      return "json"
+    } else if (formatType === MessageStickerFormatTypes.GIF) {
+      return "gif"
+    } else {
+      return "png"
+    }
+  }
+
+  getUrl(id: string, formatType: MessageStickerFormatTypes): string {
+    return `${formatType === MessageStickerFormatTypes.GIF ? Constants.DISCORD_MEDIA_URL : Constants.DISCORD_CDN_URL}/stickers/${id}.${this.getStickerFileExtension(formatType)}`;
   }
 }
 

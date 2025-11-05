@@ -49,7 +49,7 @@ export class Member extends SnowflakeBase {
     this.permissions =
       this.guild.ownerID === this.id
         ? new Permissions(Permissions.ALL)
-        : perms ?? new Permissions(Permissions.DEFAULT)
+        : (perms ?? new Permissions(Permissions.DEFAULT))
     this.roles
       .array()
       .then((roles) => {
@@ -82,7 +82,7 @@ export class Member extends SnowflakeBase {
   get displayName(): string {
     return this.nick !== null
       ? this.nick
-      : this.user.displayName ?? this.user.username
+      : (this.user.displayName ?? this.user.username)
   }
 
   toString(): string {
@@ -100,8 +100,8 @@ export class Member extends SnowflakeBase {
       data.communication_disabled_until === null
         ? null
         : data.communication_disabled_until === undefined
-        ? undefined
-        : new Date(data.communication_disabled_until)
+          ? undefined
+          : new Date(data.communication_disabled_until)
   }
 
   /**

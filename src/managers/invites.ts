@@ -6,9 +6,10 @@ import { CHANNEL_INVITES, GUILD_INVITES, INVITE } from '../types/endpoint.ts'
 import type { InvitePayload } from '../types/invite.ts'
 import { BaseManager } from './base.ts'
 
-export enum InviteTargetUserType {
-  STREAM = 1
-}
+export const InviteTargetUserType = {
+  STREAM: 1,
+  EMBEDDED_APPLICATION: 2
+} as const
 
 export interface CreateInviteOptions {
   maxAge?: number
@@ -89,8 +90,8 @@ export class InviteManager extends BaseManager<InvitePayload, Invite> {
           options?.targetUser === undefined
             ? undefined
             : typeof options.targetUser === 'string'
-            ? options.targetUser
-            : options.targetUser.id,
+              ? options.targetUser
+              : options.targetUser.id,
         target_user_type: options?.targetUserType
       }
     )) as unknown as InvitePayload
