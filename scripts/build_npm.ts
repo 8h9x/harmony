@@ -6,66 +6,66 @@ import { build, emptyDir } from "@deno/dnt";
 await emptyDir('./npm')
 
 await build({
-  entryPoints: ['./mod.ts'],
-  test: false,
-  typeCheck: false,
-  outDir: './npm',
-  compilerOptions: {
-    importHelpers: true,
-    target: 'ES2021',
-    lib: ['esnext', 'dom', 'dom.iterable']
-  },
-  shims: {
-    deno: true,
-    timers: true,
-    undici: true,
-    blob: true,
-    custom: [
-      {
-        module: './node_shims.ts',
-        globalNames: ['ErrorEvent']
-      },
-      {
-        package: { name: 'stream/web' },
-        globalNames: ['TransformStream', 'ReadableStream', 'WritableStream']
-      },
-      {
-        globalNames: [
-          {
-            name: 'WebSocket',
-            exportName: 'default'
-          }
-        ],
-        package: {
-          name: 'ws',
-          version: '^8.5.3'
+    entryPoints: ['./mod.ts'],
+    test: false,
+    typeCheck: false,
+    outDir: './npm',
+    compilerOptions: {
+        importHelpers: true,
+        target: 'ES2021',
+        lib: ['esnext', 'dom', 'dom.iterable']
+    },
+    shims: {
+        deno: true,
+        timers: true,
+        undici: true,
+        blob: true,
+        custom: [
+            {
+                module: './node_shims.ts',
+                globalNames: ['ErrorEvent']
+            },
+            {
+                package: { name: 'stream/web' },
+                globalNames: ['TransformStream', 'ReadableStream', 'WritableStream']
+            },
+            {
+                globalNames: [
+                    {
+                        name: 'WebSocket',
+                        exportName: 'default'
+                    }
+                ],
+                package: {
+                    name: 'ws',
+                    version: '^8.18.3'
+                }
+            }
+        ]
+    },
+    package: {
+        name: '@8h9x/harmony',
+        version: Deno.args[0],
+        description:
+            'An easy to use and advanced Discord API Library for Deno and Node.js',
+        license: 'MIT',
+        repository: {
+            type: 'git',
+            url: 'git+https://github.com/harmonyland/harmony.git'
+        },
+        bugs: {
+            url: 'https://github.com/harmonyland/harmony/issues'
+        },
+        devDependencies: {
+            '@types/ws': '^8.5.3'
         }
-      }
-    ]
-  },
-  package: {
-    name: '@8h9x/harmony',
-    version: Deno.args[0],
-    description:
-      'An easy to use and advanced Discord API Library for Deno and Node.js',
-    license: 'MIT',
-    repository: {
-      type: 'git',
-      url: 'git+https://github.com/harmonyland/harmony.git'
     },
-    bugs: {
-      url: 'https://github.com/harmonyland/harmony/issues'
-    },
-    devDependencies: {
-      '@types/ws': '^8.5.3'
-    }
-  },
-  // mappings: {
-  //   'https://esm.sh/ts-mixer@6.0.0': {
-  //     name: 'ts-mixer',
-  //     version: '^6.0.0'
-  //   }
-  // }
+    // mappings: {
+    //   'https://esm.sh/ts-mixer@6.0.0': {
+    //     name: 'ts-mixer',
+    //     version: '^6.0.0'
+    //   }
+    // }
 })
 
 // Post build steps

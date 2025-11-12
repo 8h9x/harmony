@@ -1,12 +1,12 @@
 import {
-  Client,
-  Intents
-  // Verification
-  // PermissionFlags,
-  // ChannelTypes,
-  // GuildCreateOptions
-} from '../mod.ts'
-import { TOKEN } from './config.ts'
+    Client,
+    Intents
+    // Verification
+    // PermissionFlags,
+    // ChannelTypes,
+    // GuildCreateOptions
+} from "../mod.ts"
+import { TOKEN } from "./config.ts"
 
 const client = new Client()
 

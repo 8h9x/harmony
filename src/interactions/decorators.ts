@@ -1,61 +1,61 @@
 import {
-  ApplicationCommandHandler,
-  ApplicationCommandHandlerCallback,
-  AutocompleteHandler,
-  AutocompleteHandlerCallback,
-  ComponentInteractionCallback,
-  InteractionsClient,
-  ComponentInteractionHandler
-} from './client.ts'
-import type { Client } from '../client/mod.ts'
-import { ApplicationCommandsModule } from './commandModule.ts'
-import { ApplicationCommandInteraction } from '../structures/applicationCommand.ts'
-import { GatewayIntents } from '../types/gateway.ts'
-import { ApplicationCommandType } from '../types/applicationCommand.ts'
-import { MessageComponentInteraction } from '../structures/messageComponents.ts'
-import { ModalSubmitInteraction } from '../structures/modalSubmitInteraction.ts'
+    type ApplicationCommandHandler,
+    type ApplicationCommandHandlerCallback,
+    type AutocompleteHandler,
+    type AutocompleteHandlerCallback,
+    type ComponentInteractionCallback,
+    InteractionsClient,
+    type ComponentInteractionHandler
+} from "./client.ts"
+import type { Client } from "../client/mod.ts"
+import { ApplicationCommandsModule } from "./commandModule.ts"
+import type { ApplicationCommandInteraction } from "../structures/applicationCommand.ts"
+import { GatewayIntents } from "../types/gateway.ts"
+import { ApplicationCommandType } from "../types/applicationCommand.ts"
+import type { MessageComponentInteraction } from "../structures/messageComponents.ts"
+import type { ModalSubmitInteraction } from "../structures/modalSubmitInteraction.ts"
 
 /**
  * Type extension that adds the `_decoratedAppCmd` list.
  *
  * @deprecated With the new decorator proposal, this is no longer needed. */
 interface DecoratedAppExt {
-  _decoratedAppCmd?: ApplicationCommandHandler[]
-  _decoratedAutocomplete?: AutocompleteHandler[]
-  _decoratedComponents?: ComponentInteractionHandler[]
+    _decoratedAppCmd?: ApplicationCommandHandler[]
+    _decoratedAutocomplete?: AutocompleteHandler[]
+    _decoratedComponents?: ComponentInteractionHandler[]
 }
 
 // Maybe a better name for this would be `ApplicationCommandBase` or `ApplicationCommandObject` or something else
 type ApplicationCommandClient =
-  | Client
-  | InteractionsClient
-  | ApplicationCommandsModule
+    | Client
+    | InteractionsClient
+    | ApplicationCommandsModule
 
 // See above
 type ApplicationCommandClientExt = ApplicationCommandClient & DecoratedAppExt
 
 type CommandValidationCondition = (
-  i: ApplicationCommandInteraction
+    i: ApplicationCommandInteraction
 ) => boolean | Promise<boolean>
 
 interface CommandValidation {
-  condition: CommandValidationCondition
-  action?: string | ApplicationCommandHandlerCallback
+    condition: CommandValidationCondition
+    action?: string | ApplicationCommandHandlerCallback
 }
 
 type ApplicationCommandDecorator = (
-  original: ApplicationCommandHandlerCallback,
-  ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    original: ApplicationCommandHandlerCallback,
+    ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
 ) => void
 
 type AutocompleteDecorator = (
-  original: AutocompleteHandlerCallback,
-  ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    original: AutocompleteHandlerCallback,
+    ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
 ) => void
 
 type MessageComponentDecorator<T = any> = (
-  original: ComponentInteractionCallback<T>,
-  ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    original: ComponentInteractionCallback<T>,
+    ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
 ) => void
 
 /**
@@ -65,26 +65,26 @@ type MessageComponentDecorator<T = any> = (
  * @returns wrapped function
  */
 function wrapConditionApplicationCommandHandler(
-  original: ApplicationCommandHandlerCallback,
-  validation: CommandValidation
+    original: ApplicationCommandHandlerCallback,
+    validation: CommandValidation
 ): ApplicationCommandHandlerCallback {
-  const { condition, action } = validation
+    const { condition, action } = validation
 
-  return async function (
-    this: ApplicationCommandClient,
-    i: ApplicationCommandInteraction
-  ) {
-    if (!(await condition(i))) {
-      // condition not met
-      if (typeof action === 'string') {
-        i.reply(action)
-      } else if (typeof action === 'function') {
-        action(i)
-      }
-      return
-    } // condition met
-    return original.call(this, i)
-  }
+    return async function (
+        this: ApplicationCommandClient,
+        i: ApplicationCommandInteraction
+    ) {
+        if (!(await condition(i))) {
+            // condition not met
+            if (typeof action === "string") {
+                i.reply(action)
+            } else if (typeof action === "function") {
+                action(i)
+            }
+            return
+        } // condition met
+        return original.call(this, i)
+    }
 }
 
 /**
@@ -106,55 +106,55 @@ function wrapConditionApplicationCommandHandler(
  * @param option Option name to handle autocompletions for. Can be `*` (all).
  */
 export function autocomplete(
-  command: string,
-  option: string
+    command: string,
+    option: string
 ): AutocompleteDecorator {
-  return function (
-    original: AutocompleteHandlerCallback,
-    {
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: AutocompleteHandlerCallback,
+        {
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handle: AutocompleteHandler = {
-        cmd: command,
-        option,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handle: AutocompleteHandler = {
+                cmd: command,
+                option,
+                handler: original.bind(this)
+            }
 
-      if (
-        handle.cmd.includes(' ') === true &&
-        handle.parent === undefined &&
-        handle.group === undefined
-      ) {
-        const parts = handle.cmd.split(/ +/).filter((e) => e !== '')
-        if (parts.length > 3 || parts.length < 1) {
-          throw new Error('Invalid command name')
-        }
-        const root = parts.shift() as string
-        const group = parts.length === 2 ? parts.shift() : undefined
-        const sub = parts.shift()
+            if (
+                handle.cmd.includes(" ") === true &&
+                handle.parent === undefined &&
+                handle.group === undefined
+            ) {
+                const parts = handle.cmd.split(/ +/).filter((e) => e !== "")
+                if (parts.length > 3 || parts.length < 1) {
+                    throw new Error("Invalid command name")
+                }
+                const root = parts.shift() as string
+                const group = parts.length === 2 ? parts.shift() : undefined
+                const sub = parts.shift()
 
-        handle.cmd = sub ?? root
-        handle.group = group
-        handle.parent = sub === undefined ? undefined : root
-      }
+                handle.cmd = sub ?? root
+                handle.group = group
+                handle.parent = sub === undefined ? undefined : root
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.autocompleteHandlers.push(handle)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.autocomplete.push(handle)
-      } else {
-        this.interactions.autocompleteHandlers.push(handle)
-      }
-    })
+            if (this instanceof InteractionsClient) {
+                this.autocompleteHandlers.push(handle)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.autocomplete.push(handle)
+            } else {
+                this.interactions.autocompleteHandlers.push(handle)
+            }
+        })
 
-    return original
-  }
+        return original
+    }
 }
 
 /**
@@ -185,38 +185,38 @@ export function autocomplete(
  * into docs for `subslash` and `groupslash`.
  */
 export function slash(
-  name?: string,
-  guild?: string
+    name?: string,
+    guild?: string
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ApplicationCommandHandler = {
-        name: name ?? prop.toString(),
-        guild,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handler: ApplicationCommandHandler = {
+                name: name ?? prop.toString(),
+                guild,
+                handler: original.bind(this)
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.handlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.commands.push(handler)
-      } else {
-        this.interactions.handlers.push(handler)
-      }
-    })
+            if (this instanceof InteractionsClient) {
+                this.handlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.commands.push(handler)
+            } else {
+                this.interactions.handlers.push(handler)
+            }
+        })
 
-    return original
-  }
+        return original
+    }
 }
 
 /**
@@ -243,40 +243,40 @@ export function slash(
  * into docs for `slash` decorator.
  */
 export function subslash(
-  parent: string,
-  name?: string,
-  guild?: string
+    parent: string,
+    name?: string,
+    guild?: string
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ApplicationCommandHandler = {
-        parent,
-        name: name ?? prop.toString(),
-        guild,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handler: ApplicationCommandHandler = {
+                parent,
+                name: name ?? prop.toString(),
+                guild,
+                handler: original.bind(this)
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.handlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.commands.push(handler)
-      } else {
-        this.interactions.handlers.push(handler)
-      }
-    })
+            if (this instanceof InteractionsClient) {
+                this.handlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.commands.push(handler)
+            } else {
+                this.interactions.handlers.push(handler)
+            }
+        })
 
-    return original
-  }
+        return original
+    }
 }
 
 /**
@@ -303,42 +303,42 @@ export function subslash(
  * into docs for `slash` decorator.
  */
 export function groupslash(
-  parent: string,
-  group: string,
-  name?: string,
-  guild?: string
+    parent: string,
+    group: string,
+    name?: string,
+    guild?: string
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ApplicationCommandHandler = {
-        group,
-        parent,
-        name: name ?? prop.toString(),
-        guild,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handler: ApplicationCommandHandler = {
+                group,
+                parent,
+                name: name ?? prop.toString(),
+                guild,
+                handler: original.bind(this)
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.handlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.commands.push(handler)
-      } else {
-        this.interactions.handlers.push(handler)
-      }
-    })
+            if (this instanceof InteractionsClient) {
+                this.handlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.commands.push(handler)
+            } else {
+                this.interactions.handlers.push(handler)
+            }
+        })
 
-    return original
-  }
+        return original
+    }
 }
 
 /**
@@ -368,34 +368,34 @@ export function groupslash(
  * `userContextMenu` decorator.
  */
 export function messageContextMenu(name?: string): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ApplicationCommandHandler = {
-        name: name ?? prop.toString(),
-        type: ApplicationCommandType.MESSAGE,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handler: ApplicationCommandHandler = {
+                name: name ?? prop.toString(),
+                type: ApplicationCommandType.MESSAGE,
+                handler: original.bind(this)
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.handlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.commands.push(handler)
-      } else {
-        this.interactions.handlers.push(handler)
-      }
-    })
-    return original
-  }
+            if (this instanceof InteractionsClient) {
+                this.handlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.commands.push(handler)
+            } else {
+                this.interactions.handlers.push(handler)
+            }
+        })
+        return original
+    }
 }
 
 /**
@@ -420,34 +420,34 @@ export function messageContextMenu(name?: string): ApplicationCommandDecorator {
  * decorators work, look into `messageContextMenu`'s docs.
  */
 export function userContextMenu(name?: string): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ApplicationCommandHandler = {
-        name: name ?? prop.toString(),
-        type: ApplicationCommandType.USER,
-        handler: original.bind(this)
-      }
+        addInitializer(function () {
+            const handler: ApplicationCommandHandler = {
+                name: name ?? prop.toString(),
+                type: ApplicationCommandType.USER,
+                handler: original.bind(this)
+            }
 
-      if (this instanceof InteractionsClient) {
-        this.handlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.commands.push(handler)
-      } else {
-        this.interactions.handlers.push(handler)
-      }
-    })
-    return original
-  }
+            if (this instanceof InteractionsClient) {
+                this.handlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.commands.push(handler)
+            } else {
+                this.interactions.handlers.push(handler)
+            }
+        })
+        return original
+    }
 }
 
 /**
@@ -469,37 +469,37 @@ export function userContextMenu(name?: string): ApplicationCommandDecorator {
  * inferred from method name.
  */
 export function messageComponent(
-  customID?: string
+    customID?: string
 ): MessageComponentDecorator<MessageComponentInteraction> {
-  return function (
-    original: ComponentInteractionCallback<MessageComponentInteraction>,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
-
-    addInitializer(function () {
-      const handler: ComponentInteractionHandler<MessageComponentInteraction> =
+    return function (
+        original: ComponentInteractionCallback<MessageComponentInteraction>,
         {
-          customID: customID ?? prop.toString(),
-          handler: original.bind(this),
-          type: 'button'
-        }
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-      if (this instanceof InteractionsClient) {
-        this.componentHandlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.components.push(handler)
-      } else {
-        this.interactions.componentHandlers.push(handler)
-      }
-    })
-    return original
-  }
+        addInitializer(function () {
+            const handler: ComponentInteractionHandler<MessageComponentInteraction> =
+                {
+                    customID: customID ?? prop.toString(),
+                    handler: original.bind(this),
+                    type: "button"
+                }
+
+            if (this instanceof InteractionsClient) {
+                this.componentHandlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.components.push(handler)
+            } else {
+                this.interactions.componentHandlers.push(handler)
+            }
+        })
+        return original
+    }
 }
 
 /**
@@ -521,36 +521,37 @@ export function messageComponent(
  * inferred from method name.
  */
 export function modalHandler(
-  customID?: string
+    customID?: string
 ): MessageComponentDecorator<ModalSubmitInteraction> {
-  return function (
-    original: ComponentInteractionCallback<ModalSubmitInteraction>,
-    {
-      name: prop,
-      addInitializer,
-      private: _private
-    }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    if (_private === true)
-      throw new TypeError('Not supported on private methods.')
+    return function (
+        original: ComponentInteractionCallback<ModalSubmitInteraction>,
+        {
+            name: prop,
+            addInitializer,
+            private: _private
+        }: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        if (_private === true)
+            throw new TypeError("Not supported on private methods.")
 
-    addInitializer(function () {
-      const handler: ComponentInteractionHandler<ModalSubmitInteraction> = {
-        customID: customID ?? prop.toString(),
-        handler: original.bind(this),
-        type: 'modal'
-      }
+        addInitializer(function () {
+            const handler: ComponentInteractionHandler<ModalSubmitInteraction> =
+                {
+                    customID: customID ?? prop.toString(),
+                    handler: original.bind(this),
+                    type: "modal"
+                }
 
-      if (this instanceof InteractionsClient) {
-        this.componentHandlers.push(handler)
-      } else if (this instanceof ApplicationCommandsModule) {
-        this.components.push(handler)
-      } else {
-        this.interactions.componentHandlers.push(handler)
-      }
-    })
-    return original
-  }
+            if (this instanceof InteractionsClient) {
+                this.componentHandlers.push(handler)
+            } else if (this instanceof ApplicationCommandsModule) {
+                this.components.push(handler)
+            } else {
+                this.interactions.componentHandlers.push(handler)
+            }
+        })
+        return original
+    }
 }
 
 /**
@@ -560,23 +561,23 @@ export function modalHandler(
  */
 export function isInGuild(message: string): ApplicationCommandDecorator
 export function isInGuild(
-  callback: ApplicationCommandHandlerCallback
+    callback: ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator
 export function isInGuild(
-  action: string | ApplicationCommandHandlerCallback
+    action: string | ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    const validation: CommandValidation = {
-      condition: (i: ApplicationCommandInteraction) => {
-        return Boolean(i.guild)
-      },
-      action
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        const validation: CommandValidation = {
+            condition: (i: ApplicationCommandInteraction) => {
+                return Boolean(i.guild)
+            },
+            action
+        }
+        return wrapConditionApplicationCommandHandler(original, validation)
     }
-    return wrapConditionApplicationCommandHandler(original, validation)
-  }
 }
 
 /**
@@ -586,33 +587,39 @@ export function isInGuild(
  * @returns wrapped function
  */
 export function isBotInVoiceChannel(
-  message: string
+    message: string
 ): ApplicationCommandDecorator
 export function isBotInVoiceChannel(
-  callback: ApplicationCommandHandlerCallback
+    callback: ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator
 export function isBotInVoiceChannel(
-  action: string | ApplicationCommandHandlerCallback
+    action: string | ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    const validation: CommandValidation = {
-      condition: async (i: ApplicationCommandInteraction) => {
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (!i.client.intents?.includes(GatewayIntents.GUILD_VOICE_STATES)) {
-          const err =
-            '@isBotInVoiceChannel: GatewayIntents.GUILD_VOICE_STATES needs to be set.'
-          console.error(err)
-          throw new Error(err)
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        const validation: CommandValidation = {
+            condition: async (i: ApplicationCommandInteraction) => {
+                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+                if (
+                    !i.client.intents?.includes(
+                        GatewayIntents.GUILD_VOICE_STATES
+                    )
+                ) {
+                    const err =
+                        "@isBotInVoiceChannel: GatewayIntents.GUILD_VOICE_STATES needs to be set."
+                    console.error(err)
+                    throw new Error(err)
+                }
+                return Boolean(
+                    await i.guild?.voiceStates.get(i.client.user!.id)
+                )
+            },
+            action
         }
-        return Boolean(await i.guild?.voiceStates.get(i.client.user!.id))
-      },
-      action
+        return wrapConditionApplicationCommandHandler(original, validation)
     }
-    return wrapConditionApplicationCommandHandler(original, validation)
-  }
 }
 
 /**
@@ -622,33 +629,39 @@ export function isBotInVoiceChannel(
  * @returns wrapped function
  */
 export function isUserInVoiceChannel(
-  message: string
+    message: string
 ): ApplicationCommandDecorator
 export function isUserInVoiceChannel(
-  callback: ApplicationCommandHandlerCallback
+    callback: ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator
 export function isUserInVoiceChannel(
-  action: string | ApplicationCommandHandlerCallback
+    action: string | ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    const validation: CommandValidation = {
-      condition: async (i: ApplicationCommandInteraction): Promise<boolean> => {
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (!i.client.intents?.includes(GatewayIntents.GUILD_VOICE_STATES)) {
-          const err =
-            '@isUserInVoiceChannel: GatewayIntents.GUILD_VOICE_STATES needs to be set.'
-          console.error(err)
-          throw new Error(err)
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        const validation: CommandValidation = {
+            condition: async (
+                i: ApplicationCommandInteraction
+            ): Promise<boolean> => {
+                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+                if (
+                    !i.client.intents?.includes(
+                        GatewayIntents.GUILD_VOICE_STATES
+                    )
+                ) {
+                    const err =
+                        "@isUserInVoiceChannel: GatewayIntents.GUILD_VOICE_STATES needs to be set."
+                    console.error(err)
+                    throw new Error(err)
+                }
+                return Boolean(await i.guild?.voiceStates.get(i.user.id))
+            },
+            action
         }
-        return Boolean(await i.guild?.voiceStates.get(i.user.id))
-      },
-      action
+        return wrapConditionApplicationCommandHandler(original, validation)
     }
-    return wrapConditionApplicationCommandHandler(original, validation)
-  }
 }
 
 /**
@@ -658,24 +671,24 @@ export function isUserInVoiceChannel(
  * @returns wrapped function
  */
 export function customValidation(
-  condition: CommandValidationCondition,
-  message: string
+    condition: CommandValidationCondition,
+    message: string
 ): ApplicationCommandDecorator
 export function customValidation(
-  condition: CommandValidationCondition,
-  callback: ApplicationCommandHandlerCallback
+    condition: CommandValidationCondition,
+    callback: ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator
 export function customValidation(
-  condition: CommandValidationCondition,
-  action: string | ApplicationCommandHandlerCallback
+    condition: CommandValidationCondition,
+    action: string | ApplicationCommandHandlerCallback
 ): ApplicationCommandDecorator {
-  return function (
-    original: ApplicationCommandHandlerCallback,
-    _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
-  ) {
-    return wrapConditionApplicationCommandHandler(original, {
-      condition,
-      action
-    })
-  }
+    return function (
+        original: ApplicationCommandHandlerCallback,
+        _ctx: ClassMethodDecoratorContext<ApplicationCommandClientExt>
+    ) {
+        return wrapConditionApplicationCommandHandler(original, {
+            condition,
+            action
+        })
+    }
 }

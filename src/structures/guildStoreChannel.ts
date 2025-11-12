@@ -1,3 +1,3 @@
-import { GuildChannel } from './channel.ts'
+import { GuildChannel } from "./channel.ts"
 
 export class StoreChannel extends GuildChannel {}

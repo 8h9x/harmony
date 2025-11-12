@@ -1,10 +1,10 @@
-import { Command, CommandContext } from '../../mod.ts'
+import { Command, type CommandContext } from "../../mod.ts"
 
 export default class PingCommand extends Command {
-  name = 'ping'
+    name = "ping"
 
-  execute(ctx: CommandContext): void {
-    console.log(ctx.args, ctx.argString)
-    ctx.message.reply(`Pong! Latency: ${ctx.client.gateway.ping}ms`)
-  }
+    execute(ctx: CommandContext): void {
+        console.log(ctx.args, ctx.argString)
+        ctx.message.reply(`Pong! Latency: ${ctx.client.gateway.ping}ms`)
+    }
 }
